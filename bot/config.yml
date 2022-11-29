@@ -1,0 +1,3 @@
+data_base: postgres
+redis_host: localhost
+postgres_host: localhost
