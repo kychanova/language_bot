@@ -18,7 +18,7 @@ services:
     container_name: redis
     image: redis
     ports:
-      - '6379:6379'
+      - '6279:6279'
     volumes:
       - ./redis_data:/data
 

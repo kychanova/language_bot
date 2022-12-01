@@ -18,7 +18,7 @@ from sch_test import load_from_to_db, train_words_in_time
 # from handlers import article_handlers
 # from handlers import general_handlers
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
+dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 # TOKEN = os.environ.get('TOKEN')
@@ -33,7 +33,7 @@ async def main():
     TOKEN = os.environ.get('TOKEN')
     bot = Bot(token=TOKEN, parse_mode='HTML')
 
-    redis = aioredis.Redis(host=f"{config_data.get('redis_host')}")
+    redis = aioredis.Redis(host=f"{config_data.get('redis_host')}", port=6279)
     storage = RedisStorage(redis=redis)
     #storage = MemoryStorage()
     # modules = glob('bot/handlers/*.py')
