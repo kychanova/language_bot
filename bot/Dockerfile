@@ -1,6 +1,6 @@
 FROM python:3.9.15-alpine
 
-RUN apt-get update
+RUN apt update
 
 WORKDIR /usr/src/app/
 COPY . /usr/src/app/
