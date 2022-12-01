@@ -13,8 +13,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     depends_on:
-      - my_redis
-      - my_postgres
+      - redis
+      - postgres
 
   redis:
     container_name: my_redis
