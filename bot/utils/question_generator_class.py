@@ -9,7 +9,9 @@ class QuestionGenerator:
     def __init__(self):
         # TODO: на сервере сделать относительный
         logging.info(f'{os.getcwd()=}')
-        self.model = T5ForConditionalGeneration.from_pretrained('resources/qgen_model')
+        model_path = 'resources/qgen_model'
+        if os.path.exists(model_path):
+            self.model = T5ForConditionalGeneration.from_pretrained(model_path)
         self.tokenizer = AutoTokenizer.from_pretrained('t5-base')
         self.max_len_input = 512
         self.max_len_output = 30

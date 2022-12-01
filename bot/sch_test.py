@@ -10,7 +10,7 @@ from forms.WordForm import WordForm
 from utils.handler_utils import make_word_train_task
 
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
+dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 TOKEN = os.environ.get('TOKEN')
@@ -19,7 +19,7 @@ print(f'{TOKEN=}')
 with open('config.yml', 'r') as file:
    config_data = yaml.safe_load(file)
 
-from database.PostgreSQL import get_users_chats, insert_new_user_word, get_words_by_user_and_date
+from database.PostgreSQL import get_users_chats, insert_user_word, get_words_by_user_and_date
 
 
 async def load_from_to_db(bot, dp):
@@ -29,7 +29,7 @@ async def load_from_to_db(bot, dp):
         sk = StorageKey(bot_id=BOT_ID, user_id=row[0], chat_id=row[1])
         state_data = await dp.storage.get_data(bot, sk)
         for word_list in state_data['learned_words_list']:
-            insert_new_user_word(row[0], word_list['word'],
+            insert_user_word(row[0], word_list['word'],
                                  date.fromisoformat(word_list['repetition_date']),
                                  word_list['days_count'])
 
