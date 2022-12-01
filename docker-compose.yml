@@ -18,7 +18,7 @@ services:
 
   redis:
     container_name: my_redis
-    image: redis
+    image: redis:7.0.5-alpine
     ports:
       - '6279:6279'
     volumes:
@@ -26,7 +26,7 @@ services:
 
   postgres:
     container_name: my_postgres
-    image: postgres
+    image: postgres:15.1-alpine
     ports:
       - '5432:5432'
     environment:
