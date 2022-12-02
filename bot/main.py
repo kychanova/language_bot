@@ -13,14 +13,18 @@ from dotenv import load_dotenv
 import yaml
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
+# from database import init_database
+from database.alchemy_db_init import init_db
+init_db()
 from sch_test import load_from_to_db, train_words_in_time
 
 # from handlers import article_handlers
 # from handlers import general_handlers
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
 # TOKEN = os.environ.get('TOKEN')
 # logging.info(f'{TOKEN=}')
 # print(f'{TOKEN=}')

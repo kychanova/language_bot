@@ -11,7 +11,7 @@ from textblob import Word
 from forms.WordForm import WordForm
 from utils.handler_utils import make_word_train_text, make_word_train_task, spell_checker
 from utils.parsing_utils import parsing_dict
-from database.PostgreSQL import insert_new_user_word, get_words_by_user_and_date
+from database.PostgreSQL import insert_user_word, get_words_by_user_and_date
 from keyboards.word_keyboards import after_spell_check_keyboard, after_spell_check_unknown_keyboard
 
 router = Router(name='word_router')

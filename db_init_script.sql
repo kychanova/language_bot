@@ -6,15 +6,15 @@
 --)
 
 
-CREATE TABLE user_words (
+CREATE TABLE IF NOT EXISTS user_words (
 id_user int,
 word int,
 repetition_date date,
 days_count int,
-CONSTRAINT PK_UW PRIMARY KEY (id_user,id_word)
+CONSTRAINT PK_UW PRIMARY KEY (id_user,word)
 )
 
-CREATE TABLE users_chats (
+CREATE TABLE IF NOT EXISTS users_chats (
 id_user int,
 id_chat int,
 CONSTRAINT PK_UC PRIMARY KEY (id_user,id_chat)
