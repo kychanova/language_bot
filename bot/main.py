@@ -16,7 +16,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
-
+print(f"{os.environ.get('TOKEN')=}")
 # from database import init_database
 from database.alchemy_db_init import init_db
 init_db()
