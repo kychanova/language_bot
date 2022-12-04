@@ -1,3 +1,3 @@
 data_base: postgres
-redis_host: redis_db
-postgres_host: postgres_db
+redis_host: localhost
+postgres_host: localhost
