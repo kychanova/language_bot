@@ -15,19 +15,19 @@ services:
     volumes:
       - ./bot/resources:/usr/src/app/resources
     depends_on:
-      - redis
-      - postgres
+      - redis_db
+      - postgres_db
 
-  redis:
-    container_name: redis
+  redis_db:
+    container_name: redis_db
     image: redis:7.0.5-alpine
     ports:
       - '6279:6279'
     volumes:
       - ./redis_data:/data
 
-  postgres:
-    container_name: postgres
+  postgres_db:
+    container_name: postgres_db
     image: postgres:15.1-alpine
     ports:
       - '5432:5432'

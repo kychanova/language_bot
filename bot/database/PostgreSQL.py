@@ -12,10 +12,10 @@ from sqlalchemy.sql import select, and_, exists
 logging.info(f'{os.getcwd()}')
 with open('config.yml', 'r') as file:
    config_data = yaml.safe_load(file)
-if config_data.get('data_base') == 'postgres':
-    connect_string = f"postgresql://{os.environ.get('POSTGRES_USER')}:" \
-                     f"{os.environ.get('POSTGRES_PASSWORD')}" \
-                     f"@{config_data.get('postgres_host')}:5432/{os.environ.get('POSTGRES_DB')}"
+# if config_data.get('data_base') == 'postgres':
+connect_string = f"postgresql://{os.environ.get('POSTGRES_USER')}:" \
+                 f"{os.environ.get('POSTGRES_PASSWORD')}" \
+                 f"@{config_data.get('postgres_host')}:5432/{os.environ.get('POSTGRES_DB')}"
 engine = create_engine(connect_string)
 conn = engine.connect()
 meta = MetaData(engine)
