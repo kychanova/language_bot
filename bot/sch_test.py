@@ -10,9 +10,9 @@ from forms.WordForm import WordForm
 from utils.handler_utils import make_word_train_task
 
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
+# dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
+# if os.path.exists(dotenv_path):
+#     load_dotenv(dotenv_path)
 TOKEN = os.environ.get('TOKEN')
 BOT_ID = int(os.environ.get('BOT_ID'))
 print(f'{TOKEN=}')

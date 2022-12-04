@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 import yaml
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '../.env.example')
+dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 print(f"{os.environ.get('TOKEN')=}")
