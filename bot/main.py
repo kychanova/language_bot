@@ -54,7 +54,7 @@ async def main():
     # dp.include_router(general_handlers.router)
     scheduler = AsyncIOScheduler()
     scheduler.add_job(load_from_to_db, "cron", hour=3, args=(bot, dp))
-    scheduler.add_job(load_from_to_db, "interval", hours=3, args=(bot, dp))
+    scheduler.add_job(train_words_in_time(), "interval", hours=3, args=(bot, dp))
     scheduler.start()
     # await load_from_to_db(bot, dp)
     logging.info('there was made main variables')

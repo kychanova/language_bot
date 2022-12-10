@@ -55,7 +55,7 @@ async def word_handler(message: types.Message, command: CommandObject, state:FSM
 async def right_spell_correction_handler(callback: types.CallbackQuery, state: FSMContext):
     text = callback.data.split("_")[1]
     url = BASE_URL + re.sub(r'\s+', '-', text)
-    await callback.answer(f"Visit the dictionary: {url}.\nI'll check your knowledge later")
+    await callback.message.answer(f"Visit the dictionary: {url}.\nI'll check your knowledge later")
 
     await add_word_to_rstorage(text, state)
 
