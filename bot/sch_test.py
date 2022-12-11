@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import date
 
@@ -45,8 +46,10 @@ async def load_from_to_db(bot, dp):
 async def train_words_in_time(bot, dp):
     ids = get_users_chats()
     for row in ids:
+        logging.info(f'{row=}')
         sk = StorageKey(bot_id=BOT_ID, user_id=row[0], chat_id=row[1])
         state_data = await dp.storage.get_data(bot, sk)
+        logging.info(f'state_data_from_train = {state_data}')
         if state_data.get('words_list'):
             word_list = state_data['words_list'].pop()
             # text = make_word_train_text(word_dict)
@@ -62,6 +65,7 @@ async def train_words_in_time(bot, dp):
             text = 'There are not words for today studying.'
 
         await bot.send_message(chat_id=row[1], text=text)
+
 
 async def main():
     await load_from_to_db()
