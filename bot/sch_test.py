@@ -22,6 +22,9 @@ with open('config.yml', 'r') as file:
 
 from database.PostgreSQL import get_users_chats, insert_user_word, get_words_by_user_and_date
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 async def load_from_to_db(bot, dp):
     print('This is scheduled func')

@@ -19,8 +19,3 @@ async def start_handler(message: types.Message):
                         "/word: I'll send you dictionary link and then check you knowledge.")
     add_user_to_db(message.from_user.id, message.chat.id)
 
-
-@router.message(Command(commands=['state_data']))
-async def questions_handler(message: types.Message, state: FSMContext):
-    sd = await state.get_data()
-    await message.answer(f"questions = {sd['questions']}")
