@@ -37,7 +37,8 @@ async def main():
     TOKEN = os.environ.get('TOKEN')
     bot = Bot(token=TOKEN, parse_mode='HTML')
 
-    redis = aioredis.Redis(host=f"{config_data.get('redis_host')}")
+    redis = aioredis.Redis(host=f"{config_data.get('redis_host')}",
+                           password=os.environ.get('REDIS_PASSWORD'))
     storage = RedisStorage(redis=redis)
     #storage = MemoryStorage()
     # modules = glob('bot/handlers/*.py')

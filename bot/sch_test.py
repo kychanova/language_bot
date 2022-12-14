@@ -64,8 +64,7 @@ async def train_words_in_time(bot, dp):
             await dp.storage.update_data(bot, sk, state_data)
             await dp.storage.set_state(bot, sk, WordForm.attempts)
             text = make_word_train_task(word_list['word'])
-        else:
-            text = 'There are not words for today studying.'
+
 
         await bot.send_message(chat_id=row[1], text=text)
 
