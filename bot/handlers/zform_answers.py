@@ -23,7 +23,8 @@ async def user_word_input_handler(message: types.Message, state: FSMContext):
             await state.set_state(WordForm.attempts)
             print(f'{type(text_inner)=}')
         else:
-            text_inner = 'You have learned all words for today!'
+            await state.set_state(state=None)
+            text_inner = 'You have learned all words for now!'
         return text_inner
 
     state_data = await state.get_data()
