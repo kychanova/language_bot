@@ -51,6 +51,7 @@ def get_word_dict_fd(word: Text) -> Optional[Dict]:
     :param word:
     :return: word information dictionary
     """
+    word = word.replace(' ', '%20')
     url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + word
     logging.info(f'{url=}')
     with urllib.request.urlopen(url) as url:
