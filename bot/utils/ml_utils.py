@@ -1,5 +1,6 @@
-import numpy as np
+from typing import Text, List
 
+import numpy as np
 from transformers import pipeline
 #from sentence_transformers import SentenceTransformer
 
@@ -14,7 +15,13 @@ qa_pipeline = pipeline('question-answering')
 #     return cos_sym
 
 
-def generate_answers(context, questions):
+def generate_answers(context: Text, questions: List[Text]) -> List[Text]:
+    """
+    Generating answers using default BERT model
+    :param context:
+    :param questions:
+    :return:
+    """
     answers = []
     for question in questions:
         output = qa_pipeline(question=question, context=context)

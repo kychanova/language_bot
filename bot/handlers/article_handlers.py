@@ -18,9 +18,9 @@ question_generator = QuestionGenerator()
 @router.message(Command(commands=['send_article']))
 async def send_article_handler(message: types.Message, state: FSMContext):
     await message.answer('Finding article...')
-    url = 'https://theconversation.com/us/arts'
+    conv_router = '/us/arts'
     start_parsing = time.time()
-    content_dict = parsing_article(url)
+    content_dict = parsing_article(conv_router)
     logging.info(f'Parsing time = {time.time() - start_parsing}')
     start_sum = time.time()
     summarized = ''

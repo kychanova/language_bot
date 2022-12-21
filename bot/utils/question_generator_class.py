@@ -1,5 +1,6 @@
 import os
 import logging
+from typing import Text
 
 from transformers import AutoTokenizer, T5ForConditionalGeneration
 import torch
@@ -17,7 +18,7 @@ class QuestionGenerator:
         self.max_len_output = 30
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-    def generate_question(self, text, num_questions=1):
+    def generate_question(self, text: Text, num_questions: int = 1):
         tokenized = self.tokenizer(text, return_tensors='pt',
                                    truncation=True,
                                    max_length=self.max_len_input).input_ids.to(self.device)
