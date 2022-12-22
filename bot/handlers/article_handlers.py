@@ -32,8 +32,9 @@ async def send_article_handler(message: types.Message, state: FSMContext):
     await state.update_data(text=summarized)
     await message.answer(summarized)
     await message.answer("Try understand it. If you don't know a word just write down command: "
-                         "/word with he word of interest. For example,<strong> /word: amazing'</strong>.\n"
-                         "You can do it any time you need")
+                         "/word with the word of interest. For example,\n<strong> /word amazing'</strong>.\n"
+                         "You can do it any time you need\n"
+                         "When you will be ready, send /questions command to check your understanding.")
     start_qgen = time.time()
     quests = question_generator.generate_question(summarized, 2)
     await state.set_state(QuestionsForm.questions)

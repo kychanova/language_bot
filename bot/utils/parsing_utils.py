@@ -1,10 +1,11 @@
+import logging
 import time
 from random import randint
 
 import requests as req
 from bs4 import BeautifulSoup
 import lxml
-from typing import Any, Text, Dict, List, Tuple
+from typing import Any, Text, Dict, List, Tuple, Optional
 
 
 def getHTML(url: Text) -> Any:
@@ -47,6 +48,23 @@ def parsing_article(router_str: Text) -> Dict[str, List]:
             content_dict[actual_key].append(tag.text)
 
     return content_dict
+
+
+def get_word_dict_fd(word: Text) -> Optional[Dict]:
+    """
+    Get word information such as definitions, examples and so on
+    :param word:
+    :return: word information dictionary
+    """
+    word = word.replace(' ', '%20')
+    url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + word
+    print(f'{url=}')
+    logging.info(f'{url=}')
+    r = getHTML(url)
+    if r.ok:
+        return r.json()
+    else:
+        return None
 
 
 # async def parsing_dict(word, url):

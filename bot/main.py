@@ -44,6 +44,7 @@ async def main():
     # modules = glob('bot/handlers/*.py')
     # logging.info(f'{modules=}')
     modules = glob('./handlers/*.py')
+    modules.sort(key=str.lower)
     logging.info(f'{modules=}')
     imported_modules = list(map(lambda pathname: SourceFileLoader(pathname, path=pathname).load_module(), modules))
     logging.info(f'{imported_modules=}')

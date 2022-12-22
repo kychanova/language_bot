@@ -7,6 +7,8 @@ from typing import Text, Any, Optional, Dict, Tuple
 
 from textblob import Word
 
+from utils.parsing_utils import get_word_dict_fd
+
 
 # def make_word_train_text(word_dict):
 #     text = ''
@@ -31,9 +33,17 @@ def make_word_train_task(word: Text) -> Text:
     if not word_dict:
         return f"I don't have the word <strong>{word}</strong> in the base(((\nSo just repeat it. "
     text = ''
-    def_exmp = [(word_def.get('definition'), word_def.get('example'))
-                for word_mean in word_dict[0]['meanings']
-                for word_def in word_mean['definitions']]
+    def_exmp =  []
+    for word_mean in word_dict[0]['meanings']:
+        if len(word_mean)>3:
+            num_def = 1
+        elif len(word_mean)>2:
+            num_def = 2
+        else:
+            num_def = 3
+        shuffle(word_mean['definitions'])
+        for word_def in word_mean['definitions'][:num_def]:
+            def_exmp.append((word_def.get('definition'), word_def.get('example')))
     for d, e in def_exmp:
         if d:
             replaced = re.sub(word, '_____', d, flags=re.IGNORECASE)
@@ -43,23 +53,6 @@ def make_word_train_task(word: Text) -> Text:
             text += '<strong>Example:</strong> ' + replaced
         text += '\n\n'
     return text
-
-
-def get_word_dict_fd(word: Text) -> Optional[Dict]:
-    """
-    Get word information such as definitions, examples and so on
-    :param word:
-    :return: word information dictionary
-    """
-    word = word.replace(' ', '%20')
-    url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + word
-    logging.info(f'{url=}')
-    with urllib.request.urlopen(url) as url:
-        data = json.load(url)
-    if data[0].get('word'):
-        return data
-    else:
-        return None
 
 
 def spell_checker(text: Text) -> Tuple[bool, Text, Text]:
