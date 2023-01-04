@@ -12,6 +12,7 @@ logger.setLevel(logging.DEBUG)
 
 @router.message(Command(commands=['get_state_data']))
 async def questions_handler(message: types.Message, state: FSMContext):
+    await state.set_state()
     state_data_from_test = await state.get_data()
     if state_data_from_test:
         logging.info(f'{state_data_from_test=}')

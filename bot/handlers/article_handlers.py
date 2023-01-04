@@ -17,6 +17,7 @@ question_generator = QuestionGenerator()
 
 @router.message(Command(commands=['send_article']))
 async def send_article_handler(message: types.Message, state: FSMContext):
+    await state.set_state()
     await message.answer('Finding article...')
     conv_router = '/us/arts'
     start_parsing = time.time()
@@ -48,13 +49,17 @@ async def send_article_handler(message: types.Message, state: FSMContext):
 
 @router.message(Command(commands=['questions']))
 async def questions_handler(message: types.Message, state: FSMContext):
+    await state.set_state()
     print('questions command handler')
-    quest_data = await state.get_data()
-    question = quest_data['questions'].pop()
-    await message.answer(question)
+    state_data = await state.get_data()
+    if state_data['questions']:
+        question = state_data['questions'].pop()
+        await message.answer(question)
 
-    await state.update_data(questions=quest_data['questions'])
-    await state.update_data(attempts=0)
-    await state.set_state(QuestionsForm.attempts)
+        await state.update_data(questions=state_data['questions'])
+        await state.update_data(attempts=0)
+        await state.set_state(QuestionsForm.attempts)
+    else:
+        await message.answer("Yod don't have questions to answer.")
 
 

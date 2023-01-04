@@ -13,8 +13,9 @@ router = Router(name='form_router')
 async def user_word_input_handler(message: types.Message, state: FSMContext):
     async def make_new_task():
         state_data['learned_words_list'].append(state_data['target_word_list'])
+        del state_data['words_list'][-1]
         if state_data.get('words_list'):
-            word_list = state_data['words_list'].pop()
+            word_list = state_data['words_list'][-1]
             text_inner = make_word_train_task(word_list['word'])
             print(f'{state_data["words_list"]=}')
             state_data['target_word_list'] = word_list
@@ -65,7 +66,7 @@ async def user_answer_handler(message: types.Message, state: FSMContext):
             await state.set_state(QuestionsForm.user_answer)
         except IndexError:
             print('IndexError')
-            message_text = 'Well done!'
+            message_text = 'Well done!\n You have answered all the questions!'
             await state.set_state()
         await message.answer(message_text)
     else:

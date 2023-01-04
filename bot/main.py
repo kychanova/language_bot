@@ -18,8 +18,8 @@ if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 print(f"{os.environ.get('TOKEN')=}")
 # from database import init_database
-from database.alchemy_db_init import init_db
-init_db()
+# from database.alchemy_db_init import init_db
+# init_db()
 from sch_test import load_from_to_db, train_words_in_time
 
 # from handlers import article_handlers
@@ -55,7 +55,7 @@ async def main():
     # dp.include_router(article_handlers.router)
     # dp.include_router(general_handlers.router)
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(load_from_to_db, "cron", hour=3, args=(bot, dp))
+    scheduler.add_job(load_from_to_db, "cron", hour=3, args=(bot, dp), timezone='Europe/Moscow')
     scheduler.add_job(train_words_in_time, "interval", hours=3, args=(bot, dp))
     scheduler.start()
     # await load_from_to_db(bot, dp)

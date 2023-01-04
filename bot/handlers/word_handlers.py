@@ -17,13 +17,10 @@ router = Router(name='word_router')
 scheduler = AsyncIOScheduler()
 BASE_URL = 'https://www.collinsdictionary.com/dictionary/english/'
 
-# def word_examples(word_list):
-#     for word_dict in word_list:
-#         yield word_dict
-
 
 @router.message(Command(commands=['word']))
 async def word_handler(message: types.Message, command: CommandObject, state:FSMContext):
+    await state.set_state()
     if command.args:
         # use html.quote(), if you need экранировать symbols: <>
         print(f'{command.args=}')
@@ -88,30 +85,23 @@ async def add_word_to_rstorage(word, state):
     wl.append({'word': word, 'repetition_date': str(date.today()), 'days_count': 0})
     await state.update_data(words_list=wl)
 
+
 @router.message(Command(commands=['get_words']))
 async def get_words(message: types.Message, command: CommandObject, state: FSMContext):
-    # wl = [{'word': 'word1', 'definition': ['word1_def', 'w1d2'], 'examples': ['word1_exmp','w1e2','w1e3']},
-    #       {'word': 'word2', 'definition': ['word2_def'], 'examples': ['word2_exmp']},
-    #       {'word': 'word3', 'definition': ['word3_def'], 'examples': ['word3_exmp']}]
-    # async with state.proxy() as data:
-    #     data['words_list'] = words_list
-    # wl = ['retain', 'dismissal']
     wl = get_words_by_user_and_date(message.from_user.id, date.today())
     await state.update_data(words_list=wl)
     logging.info('Data is added to storage')
 
 
-@router.message(Command(commands=['see_state']))
-async def get_words(message: types.Message, command: CommandObject, state: FSMContext):
-    sd = await state.get_data()
-    print(f'{sd=}')
-
-
-
 @router.message(Command(commands=['train_words']))
 async def train_words_handler(message: types.Message, state: FSMContext):
+    await state.set_state()
     state_data = await state.get_data()
     if state_data.get('words_list'):
+        words_message = 'Words for this train:\n' + \
+                        '\n'.join([wl['word'] for wl in state_data['words_list']])
+        await message.answer(words_message)
+
         word_list = state_data['words_list'].pop()
         # text = make_word_train_text(word_dict)
         state_data['target_word_list'] = word_list
@@ -127,10 +117,6 @@ async def train_words_handler(message: types.Message, state: FSMContext):
 
     await message.answer(text)
 
-
-# Get from DB:
-#   1. Def and exmp should be lists
-#   2. Shuffle them before send
 
 
 

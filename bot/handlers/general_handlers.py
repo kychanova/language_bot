@@ -11,7 +11,8 @@ router = Router(name='general_router')
 
 
 @router.message(Command(commands=['start']))
-async def start_handler(message: types.Message):
+async def start_handler(message: types.Message, state: FSMContext):
+    await state.set_state()
     logging.info('start handling')
     await message.answer("Hello! I'm bot, that can help you improve your english skills.\n"
                         "Choose the option that you interested in and write down the command:\n"

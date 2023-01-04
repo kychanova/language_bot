@@ -5,8 +5,9 @@ from datetime import date, timedelta
 from glob import glob
 
 import yaml
-from sqlalchemy import create_engine, Table, MetaData, Column, Integer, Date, PrimaryKeyConstraint
+from sqlalchemy import create_engine, Table, MetaData, Column, Integer, Date, PrimaryKeyConstraint, String
 from sqlalchemy.sql import select, and_, exists
+from sqlalchemy.dialects.postgresql import insert
 
 # TODO: implement repository pattern
 logging.info(f'{os.getcwd()}')
@@ -20,9 +21,6 @@ engine = create_engine(connect_string)
 conn = engine.connect()
 meta = MetaData(engine)
 
-users_words = Table('users_words', meta, autoload=True)
-users_chats = Table('users_chats', meta, autoload=True)
-
 
 def insert_user_word(user_id: int, word: str, repetition_date: date, days_count: int = 0) -> None:
     today_date = date.today()
@@ -32,18 +30,20 @@ def insert_user_word(user_id: int, word: str, repetition_date: date, days_count:
         days_count_next = days_count * 2 + 1
     next_date = today_date + timedelta(days_count_next-days_count)
     if days_count == 0:
-        query = users_words.insert().values(id_user=user_id, word=word, repetition_date=next_date,
-                                            days_count=days_count_next)
+        query = insert(users_words).values(id_user=user_id, word=word, repetition_date=next_date,
+                                           days_count=days_count_next)
+        query = query.on_conflict_do_update(constraint='uw_pk', set_={'repetition_date': next_date,
+                                                                      'days_count': days_count_next})
     else:
         query = users_words.update().where(id_user=user_id, word=word).\
                                     values(repetition_date=next_date, days_count=days_count_next)
     conn.execute(query)
 
+
 def get_words_by_user_and_date(user_id: int, date: date) -> list[tuple]:
     query = users_words.select().where(and_(users_words.c.id_user == user_id,
                                             users_words.c.repetition_date <= date))
     res = conn.execute(query)
-    print(f'{res.fetchone()=}')
     return res.fetchall()
 
 
@@ -61,7 +61,7 @@ def get_users_chats() -> list[tuple]:
 def init_db():
     uw_table = Table('users_words', meta,
                      Column('id_user', Integer),
-                     Column('word', Integer),
+                     Column('word', String(50)),
                      Column('repetition_date', Date),
                      Column('days_count', Integer),
                      PrimaryKeyConstraint('id_user', 'word', name='uw_pk'))
@@ -72,4 +72,9 @@ def init_db():
                      PrimaryKeyConstraint('id_user', 'id_chat', name='uc_pk'))
 
     meta.create_all(engine)
+
+
+init_db()
+users_words = Table('users_words', meta, autoload=True)
+users_chats = Table('users_chats', meta, autoload=True)
 
