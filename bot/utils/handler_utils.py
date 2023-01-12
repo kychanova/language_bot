@@ -35,14 +35,16 @@ def make_word_train_task(word: Text) -> Text:
     text = ''
     def_exmp =  []
     for word_mean in word_dict[0]['meanings']:
-        if len(word_mean)>3:
-            num_def = 1
-        elif len(word_mean)>2:
-            num_def = 2
-        else:
-            num_def = 3
-        shuffle(word_mean['definitions'])
-        for word_def in word_mean['definitions'][:num_def]:
+        # if len(word_mean)>3:
+        #     num_def = 1
+        # elif len(word_mean)>2:
+        #     num_def = 2
+        # else:
+        #     num_def = 3
+        # shuffle(word_mean['definitions'])
+        # for word_def in word_mean['definitions'][:num_def]:
+        #     def_exmp.append((word_def.get('definition'), word_def.get('example')))
+        for word_def in word_mean['definitions']:
             def_exmp.append((word_def.get('definition'), word_def.get('example')))
     for d, e in def_exmp:
         if d:
