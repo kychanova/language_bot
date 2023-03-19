@@ -8,7 +8,7 @@ import lxml
 from typing import Any, Text, Dict, List, Tuple, Optional
 
 
-def getHTML(url: Text) -> Any:
+def get_page(url: Text) -> Any:
     headers = {
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36'}
     res = req.get(url, headers=headers)
@@ -25,14 +25,14 @@ def parsing_article(router_str: Text) -> Dict[str, List]:
     """
     prefix_link = 'https://theconversation.com'
     url = prefix_link + router_str
-    html_code = getHTML(url).text
+    html_code = get_page(url).text
     soup = BeautifulSoup(html_code, 'lxml')
     articles = soup.find_all('article')
     n = len(articles)
     article = randint(0, n-1)
     link = articles[article].find('a').get('href')
 
-    article_html_code = getHTML(prefix_link + link).text
+    article_html_code = get_page(prefix_link + link).text
     soup_article = BeautifulSoup(article_html_code, 'lxml')
     content = soup_article.find(class_='entry-content')
     title = soup_article.find(class_='content-header-block').text
@@ -60,7 +60,7 @@ def get_word_dict_fd(word: Text) -> Optional[Dict]:
     url = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + word
     print(f'{url=}')
     logging.info(f'{url=}')
-    r = getHTML(url)
+    r = get_page(url)
     if r.ok:
         return r.json()
     else:

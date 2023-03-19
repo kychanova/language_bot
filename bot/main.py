@@ -55,12 +55,19 @@ async def main():
     # dp.include_router(article_handlers.router)
     # dp.include_router(general_handlers.router)
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(load_from_to_db, "cron", hour=3, args=(bot, dp), timezone='Europe/Moscow')
-    scheduler.add_job(train_words_in_time, "interval", hours=3, args=(bot, dp))
+    scheduler.add_job(load_from_to_db, "cron",
+                      hour=config_data.get('load_hour'),
+                      minute=config_data.get('load_minute') ,
+                      args=(bot, dp), timezone='Europe/Moscow')
+    scheduler.add_job(train_words_in_time, "interval",
+                      hours=config_data.get('train_hours') ,
+                      minutes=config_data.get('train_minutes'),
+                      args=(bot, dp))
     scheduler.start()
     # await load_from_to_db(bot, dp)
     logging.info('there was made main variables')
     await dp.start_polling(bot)
+
 
 if __name__ == "__main__":
     asyncio.run(main())

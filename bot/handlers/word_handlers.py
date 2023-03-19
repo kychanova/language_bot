@@ -12,6 +12,9 @@ from forms.WordForm import WordForm
 from utils.handler_utils import make_word_train_task, spell_checker
 from database.PostgreSQL import insert_user_word, get_words_by_user_and_date
 from keyboards.word_keyboards import after_spell_check_keyboard, after_spell_check_unknown_keyboard
+from custom_classes.Word import Word as Word_local
+from utils.handler_utils import add_words, train_words
+from utils.training_func import defs_trainer
 
 router = Router(name='word_router')
 scheduler = AsyncIOScheduler()
@@ -81,41 +84,47 @@ async def wrong_spell_correction_handler(callback: types.CallbackQuery, state: F
 
 async def add_word_to_rstorage(word, state):
     state_data = await state.get_data()
-    wl = state_data.get('words_list', [])
-    wl.append({'word': word, 'repetition_date': str(date.today()), 'days_count': 0})
-    await state.update_data(words_list=wl)
+    words = state_data.get('words', dict())
+    words[word] = {'repetition_date': str(date.today()), 'days_count': 0}
+    await state.update_data(words=words)
 
 
-@router.message(Command(commands=['get_words']))
-async def get_words(message: types.Message, command: CommandObject, state: FSMContext):
-    wl = get_words_by_user_and_date(message.from_user.id, date.today())
-    await state.update_data(words_list=wl)
-    logging.info('Data is added to storage')
+# @router.message(Command(commands=['get_words']))
+# async def get_words(message: types.Message, command: CommandObject, state: FSMContext):
+#     wl = get_words_by_user_and_date(message.from_user.id, date.today())
+#     await state.update_data(words_list=wl)
+#     logging.info('Data is added to storage')
 
 
 @router.message(Command(commands=['train_words']))
 async def train_words_handler(message: types.Message, state: FSMContext):
     await state.set_state()
     state_data = await state.get_data()
-    if state_data.get('words_list'):
+    if state_data.get('words'):
         words_message = 'Words for this train:\n' + \
-                        '\n'.join([wl['word'] for wl in state_data['words_list']])
+                        '\n'.join([w for w, d in state_data['words'].items()])
         await message.answer(words_message)
 
-        word_list = state_data['words_list'].pop()
-        # text = make_word_train_text(word_dict)
-        state_data['target_word_list'] = word_list
-        if not state_data.get('learned_words_list'):
-            state_data['learned_words_list'] = []
-        state_data['attempts'] = 0
+        state_data = await train_words(message.chat.id, state_data)
 
         await state.update_data(state_data)
         await state.set_state(WordForm.attempts)
-        text = make_word_train_task(word_list['word'])
     else:
         text = 'There are not words for today studying.'
+        await message.answer(text)
 
-    await message.answer(text)
+
+@router.message(Command(commands=['get_word_definition']))
+async def get_word_info_handler(message: types.Message, command: CommandObject, state:FSMContext):
+    await state.set_state()
+    if command.args:
+        text = command.args.strip()
+        url = BASE_URL + re.sub(r'\s+', '-', text)
+
+        await message.answer(f"Visit the dictionary: {url}.")
+
+    else:
+        await message.answer("Please, input the word you wanna know after command /get_word_info")
 
 
 

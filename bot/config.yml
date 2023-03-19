@@ -1,3 +1,9 @@
 data_base: postgres
 redis_host: localhost
 postgres_host: localhost
+
+# schedulers time
+load_hour: 17
+load_minute: 0
+train_hours: 0
+train_minutes: 3

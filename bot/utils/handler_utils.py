@@ -1,13 +1,23 @@
 import logging
 import re
-from random import shuffle
+from datetime import date
+from random import shuffle, choice
 import urllib.request
 import json
 from typing import Text, Any, Optional, Dict, Tuple
+from inspect import getmembers, isfunction
 
+from aiogram import Bot
 from textblob import Word
 
 from utils.parsing_utils import get_word_dict_fd
+from custom_classes.Word import Word as Word_local
+
+from utils import training_func
+
+
+funcs = getmembers(training_func, isfunction)
+trainer_funcs = [func for name, func in funcs if name.find('trainer')!=-1]
 
 
 # def make_word_train_text(word_dict):
@@ -20,6 +30,15 @@ from utils.parsing_utils import get_word_dict_fd
 #                 word_dict['examples'].pop().replace(word_dict['word'], '_____')
 #     print(f'make word tran text {type(text)=} ')
 #     return text
+
+
+async def train_words(chat_id, state_data, bot=None):
+    if not bot:
+        bot = Bot.get_current(no_error=False)
+    trainer = choice(trainer_funcs)
+    state_data = await trainer(bot, chat_id, state_data)
+    return state_data
+
 
 
 def make_word_train_task(word: Text) -> Text:
@@ -83,6 +102,11 @@ def spell_checker(text: Text) -> Tuple[bool, Text, Text]:
             misspelled = True
     return misspelled, unknown, corrected
 
+
+def add_words(words, state_data):
+    words_set = set(state_data.get('words', []))
+    words_set.update(words)
+    return list(words_set)
 
 
 

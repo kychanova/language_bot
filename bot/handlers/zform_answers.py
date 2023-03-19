@@ -1,50 +1,46 @@
 from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
+from aiogram.methods.send_message import SendMessage
 
 from forms.WordForm import WordForm
 from forms.QuestionsForm import QuestionsForm
 #from utils.ml_utils import check_sent_similarity
-from utils.handler_utils import make_word_train_task
+from utils.handler_utils import make_word_train_task, train_words
+
+from utils.training_func import defs_trainer
 
 router = Router(name='form_router')
 
 
 @router.message(WordForm.attempts)
 async def user_word_input_handler(message: types.Message, state: FSMContext):
-    async def make_new_task():
-        state_data['learned_words_list'].append(state_data['target_word_list'])
-        del state_data['words_list'][-1]
-        if state_data.get('words_list'):
-            word_list = state_data['words_list'][-1]
-            text_inner = make_word_train_task(word_list['word'])
-            print(f'{state_data["words_list"]=}')
-            state_data['target_word_list'] = word_list
-            state_data['attempts'] = 0
+    async def make_new_task(state_data=None):
+        word = state_data['target_word']
+        state_data['learned_words'].append({'word': word,
+                                            'repetition_date': state_data['words'][word]['repetition_date'],
+                                            'days_count': state_data['words'][word]['days_count']})
+        del state_data['words'][word]
+        if state_data.get('words'):
+            state_data = await train_words(chat_id=message.chat.id, state_data=state_data)
             await state.set_state(WordForm.attempts)
-            print(f'{type(text_inner)=}')
         else:
             await state.set_state()
             text_inner = 'You have learned all words for now!'
         await state.update_data(state_data)
-        return text_inner
 
     state_data = await state.get_data()
-    print(f"{state_data=}")
-    target_word_list = state_data['target_word_list']
-    if message.text == target_word_list['word']:
+    target_word = state_data['target_word']
+    if message.text == target_word:
         await message.answer('Well done!')
-        text = await make_new_task()
+        await make_new_task(state_data)
     else:
         if state_data['attempts'] > 1:
-            text = await make_new_task()
-            await message.answer('Right answer: ' + target_word_list['word'])
+            await message.answer('Right answer: ' + target_word)
+            await make_new_task(state_data)
         else:
-            text = "Try one more time!"
+            await message.answer("Try one more time!")
             await state.update_data(attempts=state_data['attempts']+1)
         await state.set_state(WordForm.attempts)
-    print(f'{text=}')
-    print(f'{type(text)=}')
-    await message.answer(text)
 
 
 @router.message(QuestionsForm.attempts)
