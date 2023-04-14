@@ -4,15 +4,10 @@ from datetime import date
 
 import asyncio
 import yaml
-from aiogram.methods import SendMessage
-from dotenv import load_dotenv
 from aiogram.fsm.storage.base import StorageKey
-from aiogram.client.bot import Bot
 
-from utils.training_func import defs_trainer
-from custom_classes.Word import Word
 from forms.WordForm import WordForm
-from utils.handler_utils import make_word_train_task, add_words, train_words
+from utils.handler_utils import  train_words
 
 
 # dotenv_path = os.path.join(os.path.dirname(__file__), '../.env')
@@ -37,11 +32,12 @@ async def load_from_to_db(bot, dp):
     for row in ids:
         sk = StorageKey(bot_id=BOT_ID, user_id=row[0], chat_id=row[1])
         state_data = await dp.storage.get_data(bot, sk)
-        if state_data['learned_words_list']:
+        if state_data['learned_words']:
             for word in state_data['learned_words']:
                 insert_user_word(row[0], word['word'],
                                  date.fromisoformat(word['repetition_date']),
                                  word['days_count'])
+
 
         wls = get_words_by_user_and_date(row[0], date.today())
         words = state_data.get('words', dict())
@@ -49,7 +45,7 @@ async def load_from_to_db(bot, dp):
             words[wl[1]] = {'repetition_date': wl[2].isoformat(), 'days_count':wl[3]}
         print(f'{type(words)=}')
         print(f'{words}')
-        await dp.storage.update_data(bot=bot, key=sk, data={'words': words})
+        await dp.storage.update_data(bot=bot, key=sk, data={'words': words,})
 
 
 async def train_words_in_time(bot, dp):

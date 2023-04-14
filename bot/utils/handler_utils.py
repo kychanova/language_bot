@@ -11,7 +11,6 @@ from aiogram import Bot
 from textblob import Word
 
 from utils.parsing_utils import get_word_dict_fd
-from custom_classes.Word import Word as Word_local
 
 from utils import training_func
 

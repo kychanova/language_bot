@@ -12,7 +12,6 @@ from forms.WordForm import WordForm
 from utils.handler_utils import make_word_train_task, spell_checker
 from database.PostgreSQL import insert_user_word, get_words_by_user_and_date
 from keyboards.word_keyboards import after_spell_check_keyboard, after_spell_check_unknown_keyboard
-from custom_classes.Word import Word as Word_local
 from utils.handler_utils import add_words, train_words
 from utils.training_func import defs_trainer
 

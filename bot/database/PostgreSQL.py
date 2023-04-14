@@ -24,10 +24,7 @@ meta = MetaData(engine)
 
 def insert_user_word(user_id: int, word: str, repetition_date: date, days_count: int = 0) -> None:
     today_date = date.today()
-    if (today_date - repetition_date).days > 2:
-        days_count_next = days_count
-    else:
-        days_count_next = days_count * 2 + 1
+    days_count_next = days_count * 2 + 1
     next_date = today_date + timedelta(days_count_next-days_count)
     if days_count == 0:
         query = insert(users_words).values(id_user=user_id, word=word, repetition_date=next_date,

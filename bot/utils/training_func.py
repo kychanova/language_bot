@@ -13,7 +13,7 @@ from utils.parsing_utils import get_page
 from utils.training_utils import make_word_train_task, miss_in_dictionary
 
 
-def base_train(bot, chat_id, state_data):
+def base_train(chat_id, state_data):
     word = next(iter(state_data['words']))
     state_data['target_word'] = word
     if not state_data.get('learned_words'):

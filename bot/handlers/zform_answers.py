@@ -1,3 +1,5 @@
+from math import ceil
+
 from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.methods.send_message import SendMessage
@@ -37,6 +39,8 @@ async def user_word_input_handler(message: types.Message, state: FSMContext):
         if state_data['attempts'] > 1:
             await message.answer('Right answer: ' + target_word)
             await make_new_task(state_data)
+        elif state_data['attempts']==1:
+            await message.answer('A little hint: ' + target_word[:ceil(len(target_word)*0.2)])
         else:
             await message.answer("Try one more time!")
             await state.update_data(attempts=state_data['attempts']+1)
